@@ -10,33 +10,38 @@ type vector = float list
 Definirajte enotske vektorje `i`, `j` in `k` v treh dimenzijah.
 [*----------------------------------------------------------------------------*)
 
+let i = [1.; 0.; 0.]
+let j = [0.; 1.; 0.]
+let k = [0.; 0.; 1.]
+
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `razteg : float -> vector -> vector`, ki vektor, 
 predstavljen s seznamom števil s plavajočo vejico, pomnoži z danim skalarjem.
 [*----------------------------------------------------------------------------*)
 
-let rec razteg = ()
+let razteg skal vec = List.map (fun y -> skal *. y) vec
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `sestej : vector -> vector -> vector`, ki vrne vsoto dveh 
 vektorjev.
 [*----------------------------------------------------------------------------*)
 
-let rec sestej = ()
+let sestej x y = List.map2 ( +. ) x y
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `skalarni_produkt : vector -> vector -> float`, ki izračuna 
 skalarni produkt dveh vektorjev
 [*----------------------------------------------------------------------------*)
 
-let rec skalarni_produkt = ()
+let skalarni_produkt x y = 
+  List.fold_left2 (fun acc a b -> acc +. (a *. b)) 0. x y 
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `norma : vector -> float`, ki vrne evklidsko normo vektorja.
 [*----------------------------------------------------------------------------*)
 
-let rec norma = ()
+let norma x = sqrt (skalarni_produkt x x)
 
 (*----------------------------------------------------------------------------*]
 Napišite funkcijo `projeciraj : vector -> vector -> vector`, ki izračuna 
