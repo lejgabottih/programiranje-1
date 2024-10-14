@@ -6,9 +6,37 @@ Pri vseh nalogah se vam pod razdelkom **RAM** splača nastaviti _View_ na _Decim
 
 Zapišite program, ki v register `A` zapiše ostanek pri deljenju registra `A` z registrom `B`.
 
+    MOV A, 56
+    MOV B, 20
+
+    CALL ostanek ;Vrne ostanek pri deljenju stevila v A s stevilom v B in 				vrne ostanek v A
+    HLT
+    ostanek:
+        MOV C, A
+        DIV B
+        MUL B
+        SUB C, A
+        MOV A, C
+        
+        RET
+
 ## Zaporedna števila
 
 Zapišite program, ki na sklad zaporedno postavlja števila od 13 do 42.
+
+    MOV A, 13
+    MOV B, 42
+    INC B
+
+    CALL zapstevila ;
+    HLT
+    zapstevila:
+        PUSH A
+        INC A
+        CMP A, B
+        JNZ zapstevila	
+
+        RET
 
 ## Iskanje najmanjšega števila v seznamu
 
