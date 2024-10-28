@@ -58,7 +58,13 @@ let range' n =
  - : int list = [2; 3; 4; 5; 6]
 [*----------------------------------------------------------------------------*)
 
-let rec map = ()
+let map f sez =
+  let rec map' f sez acc =
+    match sez with
+    | [] -> acc
+    | x :: xs -> map' f xs (acc @ [f x])
+  in
+map' f sez [] 
 
 (*----------------------------------------------------------------------------*]
  Časovna zahtevnost operatorja [@] je linearna v prvem argumentu, poskušajte 
@@ -66,7 +72,13 @@ let rec map = ()
  Pri tem ne smete uporabiti vgrajene funkcije [List.rev] ali [List.rev_append].
 [*----------------------------------------------------------------------------*)
 
-let rec reverse = ()
+let reverse' sez =
+  let rec pomozna sez kup = 
+    match sez with
+    | [] -> kup
+    | x :: xs -> pomozna xs (x :: kup) 
+  in
+  pomozna sez []
 
 (*----------------------------------------------------------------------------*]
  Funkcija [map_tlrec] je repno rekurzivna različica funkcije [map].
@@ -76,7 +88,13 @@ let rec reverse = ()
  - : int list = [2; 3; 4; 5; 6]
 [*----------------------------------------------------------------------------*)
 
-let rec map_tlrec = ()
+let map f sez =
+  let rec map' f sez acc =
+    match sez with
+    | [] -> acc
+    | x :: xs -> map' f xs (acc @ [f x])
+  in
+map' f sez [] 
 
 (*----------------------------------------------------------------------------*]
  Funkcija [mapi] je ekvivalentna python kodi:
@@ -95,7 +113,13 @@ let rec map_tlrec = ()
  - : int list = [0; 1; 2; 5; 6; 7]
 [*----------------------------------------------------------------------------*)
 
-let rec mapi = ()
+let mapi f sez =
+  let rec mapi' f sez acc i =
+     match sez with
+     | [] -> acc 
+     | x :: xs -> mapi' f xs (acc @ [(f i x)]) (i+1)
+  in
+mapi' f sez [] 0
 
 (*----------------------------------------------------------------------------*]
  Funkcija [zip] sprejme dva seznama in vrne seznam parov istoležnih
@@ -108,7 +132,16 @@ let rec mapi = ()
  Exception: Failure "Different lengths of input lists.".
 [*----------------------------------------------------------------------------*)
 
-let rec zip = ()
+exception Unequal_length
+
+let zip sez sez' =
+  let rec zip' sez sez' acc =
+      match (sez, sez') with
+      | ([], x :: xs) | (x :: xs, [])-> raise Unequal_length
+      | ([], []) -> acc
+      | (x :: xs, y :: ys) -> zip' xs ys (acc @ [(x, y)])
+    in
+  zip' sez sez' []
 
 (*----------------------------------------------------------------------------*]
  Funkcija [unzip] je inverz funkcije [zip], torej sprejme seznam parov
@@ -208,4 +241,7 @@ let rec exists = ()
  - : int = 0
 [*----------------------------------------------------------------------------*)
 
-let rec first = ()
+let rec first f default sez =
+  match sez with
+  | [] -> default
+  | x :: xs -> if f x then x else first f default xs
