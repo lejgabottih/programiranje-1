@@ -1,7 +1,5 @@
-(* ========== Vaja 2: Funkcijsko Programiranje  ========== *)
-
-(*----------------------------------------------------------------------------*]
- Definirajte pomožno funkcijo za obračanje seznamov.
+(*----------------------------------------------------------------------------*
+ # Rekurzija
 [*----------------------------------------------------------------------------*)
 
 let rec reverse sez = 
@@ -66,10 +64,8 @@ let map f sez =
   in
 map' f sez [] 
 
-(*----------------------------------------------------------------------------*]
- Časovna zahtevnost operatorja [@] je linearna v prvem argumentu, poskušajte 
- napisati reverse tako, da bo bolj učinkovit in hkrati repno rekurziven.
- Pri tem ne smete uporabiti vgrajene funkcije [List.rev] ali [List.rev_append].
+(*----------------------------------------------------------------------------*
+ ## Funkcija `repeat`
 [*----------------------------------------------------------------------------*)
 
 let reverse' sez =
@@ -96,21 +92,14 @@ let map f sez =
   in
 map' f sez [] 
 
-(*----------------------------------------------------------------------------*]
- Funkcija [mapi] je ekvivalentna python kodi:
+let primer_repeat_1 = repeat "A" 5
+(* val primer_repeat_1 : string list = ["A"; "A"; "A"; "A"; "A"] *)
 
-  def mapi(f, list):
-      mapi_list = []
-      index = 0
-      for x in list:
-          mapi_list += [f(x, index)]
-          index += 1
-      return mapi_list
+let primer_repeat_2 = repeat "A" (-2)
+(* val primer_repeat_2 : string list = [] *)
 
- Pri tem ne smete uporabiti vgrajene funkcije [List.mapi].
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # mapi (+) [0; 0; 0; 2; 2; 2];;
- - : int list = [0; 1; 2; 5; 6; 7]
+(*----------------------------------------------------------------------------*
+ ## Funkcija `range`
 [*----------------------------------------------------------------------------*)
 
 let mapi f sez =
@@ -143,102 +132,82 @@ let zip sez sez' =
     in
   zip' sez sez' []
 
-(*----------------------------------------------------------------------------*]
- Funkcija [unzip] je inverz funkcije [zip], torej sprejme seznam parov
- [(x0, y0); (x1, y1); ...] in vrne par seznamov ([x0; x1; ...], [y0; y1; ...]).
- Pri tem ne smete uporabiti vgrajene funkcije [List.split].
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # unzip [(0,"a"); (1,"b"); (2,"c")];;
- - : int list * string list = ([0; 1; 2], ["a"; "b"; "c"])
+let primer_range = range 10
+(* val primer_range : int list = [0; 1; 2; 3; 4; 5; 6; 7; 8; 9; 10] *)
+
+(*----------------------------------------------------------------------------*
+ ## Funkcija `map`
 [*----------------------------------------------------------------------------*)
 
-let rec unzip = ()
-
-(*----------------------------------------------------------------------------*]
- Funkcija [unzip_tlrec] je repno rekurzivna različica funkcije [unzip].
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # unzip_tlrec [(0,"a"); (1,"b"); (2,"c")];;
- - : int list * string list = ([0; 1; 2], ["a"; "b"; "c"])
+(*----------------------------------------------------------------------------*
+ Funkcija `map f list` naj sprejme seznam `list` oblike `x0; x1; x2; ...` in
+ funkcijo `f` ter vrne seznam preslikanih vrednosti, torej `f x0; f x1; f x2;
+ ...`. Pri tem ne smete uporabiti vgrajene funkcije `List.map`.
 [*----------------------------------------------------------------------------*)
 
-let rec unzip_tlrec = ()
+let rec map _ _ = ()
 
-(*----------------------------------------------------------------------------*]
- Funkcija [loop condition f x] naj se izvede kot python koda:
+let primer_map_1 =
+  let plus_two = (+) 2 in
+  map plus_two [0; 1; 2; 3; 4]
+(* val primer_map_1 : int list = [2; 3; 4; 5; 6] *)
 
-  def loop(condition, f, x):
-      while condition(x):
-          x = f(x)
-      return x
-
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # loop (fun x -> x < 10) ((+) 4) 4;;
- - : int = 12
+(*----------------------------------------------------------------------------*
+ Napišite še funkcijo `map_tlrec`, ki naj bo repno rekurzivna različica funkcije
+ `map`.
 [*----------------------------------------------------------------------------*)
 
-let rec loop = ()
+let map_tlrec _ _ = ()
 
-(*----------------------------------------------------------------------------*]
- Funkcija [fold_left_no_acc f list] sprejme seznam [x0; x1; ...; xn] in
- funkcijo dveh argumentov [f] in vrne vrednost izračuna
- f(... (f (f x0 x1) x2) ... xn).
- V primeru seznama z manj kot dvema elementoma vrne napako.
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # fold_left_no_acc (^) ["F"; "I"; "C"; "U"; "S"];;
- - : string = "FICUS"
+let primer_map_2 =
+  let plus_two = (+) 2 in
+  map_tlrec plus_two [0; 1; 2; 3; 4]
+(* val primer_map_2 : int list = [2; 3; 4; 5; 6] *)
+
+(*----------------------------------------------------------------------------*
+ ## Funkcija `mapi`
 [*----------------------------------------------------------------------------*)
 
-let rec fold_left_no_acc = ()
+(*----------------------------------------------------------------------------*
+ Funkcija `mapi` naj bo ekvivalentna Python kodi:
 
-(*----------------------------------------------------------------------------*]
- Funkcija [apply_sequence f x n] vrne seznam zaporednih uporab funkcije [f] na
- vrednosti [x] do vključno [n]-te uporabe, torej
- [x; f x; f (f x); ...; (f uporabljena n-krat na x)].
- Funkcija je repno rekurzivna.
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # apply_sequence (fun x -> x * x) 2 5;;
- - : int list = [2; 4; 16; 256; 65536; 4294967296]
- # apply_sequence (fun x -> x * x) 2 (-5);;
- - : int list = []
+ ```python
+ def mapi(f, lst):
+     mapi_lst = []
+     index = 0
+     for x in lst:
+         mapi_lst.append(f(index, x))
+         index += 1
+     return mapi_lst
+ ```
+
+ Pri tem ne smete uporabiti vgrajene funkcije `List.mapi`.
 [*----------------------------------------------------------------------------*)
 
-let rec apply_sequence = ()
+let mapi _ _ = ()
 
-(*----------------------------------------------------------------------------*]
- Funkcija [filter f list] vrne seznam elementov [list], pri katerih funkcija [f]
- vrne vrednost [true].
- Pri tem ne smete uporabiti vgrajene funkcije [List.filter].
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # filter ((<)3) [0; 1; 2; 3; 4; 5];;
- - : int list = [4; 5]
+let primer_mapi = mapi (+) [0; 0; 0; 2; 2; 2]
+(* val primer_mapi : int list = [0; 1; 2; 5; 6; 7] *)
+
+(*----------------------------------------------------------------------------*
+ ## Funkcija `zip`
 [*----------------------------------------------------------------------------*)
 
-let rec filter = ()
-
-(*----------------------------------------------------------------------------*]
- Funkcija [exists] sprejme seznam in funkcijo, ter vrne vrednost [true] čim
- obstaja element seznama, za katerega funkcija vrne [true] in [false] sicer.
- Funkcija je repno rekurzivna.
- Pri tem ne smete uporabiti vgrajene funkcije [List.find] ali podobnih.
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # exists ((<) 3) [0; 1; 2; 3; 4; 5];;
- - : bool = true
- # exists ((<) 8) [0; 1; 2; 3; 4; 5];;
- - : bool = false
+(*----------------------------------------------------------------------------*
+ Funkcija `zip` naj sprejme dva seznama in vrne seznam parov istoležnih
+ elementov podanih seznamov. Če seznama nista enake dolžine, naj vrne napako.
+ Pri tem ne smete uporabiti vgrajene funkcije `List.combine`.
 [*----------------------------------------------------------------------------*)
 
-let rec exists = ()
+let rec zip _ _ = ()
 
-(*----------------------------------------------------------------------------*]
- Funkcija [first f default list] vrne prvi element seznama, za katerega
- funkcija [f] vrne [true]. Če takšnega elementa ni, vrne [default].
- Funkcija je repno rekurzivna.
- Pri tem ne smete uporabiti vgrajene funkcije [List.find] ali podobnih. 
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # first ((<) 3) 0 [1; 1; 2; 3; 5; 8];;
- - : int = 5
- # first ((<) 8) 0 [1; 1; 2; 3; 5; 8];;
- - : int = 0
+let primer_zip_1 = zip [1; 1; 1; 1] [0; 1; 2; 3]
+(* val primer_zip_1 : (int * int) list = [(1, 0); (1, 1); (1, 2); (1, 3)] *)
+
+(* let primer_zip_2 = zip [1; 1; 1; 1] [1; 2; 3; 4; 5] *)
+
+(*----------------------------------------------------------------------------*
+ ## Funkcija `unzip`
 [*----------------------------------------------------------------------------*)
 
 let rec first f default sez =
