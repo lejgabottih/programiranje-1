@@ -1,7 +1,17 @@
 -- Izomorfizmi
 
 theorem eq1 {A B : Prop} : (A ∧ B) ↔ (B ∧ A) :=
-  sorry
+  by
+    apply Iff.intro --constructor
+    intro ab
+    constructor --And.intro
+    exact ab.right
+    exact ab.left
+    intro ba
+    constructor
+    exact ba.right
+    exact ba.left
+
 
 theorem eq2 {A B : Prop} : (A ∨ B) ↔ (B ∨ A) :=
   sorry
@@ -16,7 +26,33 @@ theorem eq5 {A B C : Prop} : A ∧ (B ∨ C) ↔ (A ∧ B) ∨ (A ∧ C) :=
   sorry
 
 theorem eq6 {A B C : Prop} : (B ∨ C) → A ↔ (B → A) ∧ (C → A) :=
-  sorry
+  by
+    constructor
+    intro h
+    constructor
+
+    -- ena moznost
+    intro b
+    apply h
+    left
+    exact b
+    -- druga moznost
+    intro c
+    have xx : B ∨ C := Or.inr c
+    -- have yy := h (Or.inr c)
+    exact h (xx)
+    -- exact yy
+
+    intro h BvC
+    cases BvC
+    case inl b =>
+      exact h.left b
+
+    case inr c =>
+      exact h.right c
+
+
+
 
 theorem eq7 {A B C : Prop} : C → (A ∧ B) ↔ (C → A) ∧ (C → B) :=
   sorry
