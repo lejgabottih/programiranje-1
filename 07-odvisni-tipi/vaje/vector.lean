@@ -36,7 +36,7 @@ inductive Finite : Naravno -> Type where
   | fsucc : {n : Naravno} -> Finite n -> Finite (Naravno.naslednik n)
 
 
-def downcast: a < b -> Finite a -> Finite b
+-- def downcast: a < b -> Finite a -> Finite b
 
 def lookup {A : Type} {n : Naravno} : Vektor A n -> Finite n -> A :=
   fun xs i =>
@@ -78,9 +78,6 @@ fun {A : Type} {m n : Naravno} (xs : Vektor A m) (ys : Vektor A n) =>
 def add_comm : {m n : Naravno} -> plus m n = plus n m :=
   sorry
 
-
-def add_comm : {m n : Naravno} -> plus m n = plus n m :=
-  sorry
 
 -- Uporabite samo definicijo `stakni_vektorja'` in taktike `rw` in `exact`.
 def stakni_vektorja'' : {A : Type} → {m n : Naravno} → Vektor A m → Vektor A n → Vektor A (plus m n) :=
