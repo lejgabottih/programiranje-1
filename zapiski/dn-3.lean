@@ -10,13 +10,44 @@ set_option autoImplicit false
 ------------------------------------------------------------------------------/
 
 def vsota_prvih : Nat → Nat :=
-  sorry
+  fun n =>
+    match n with
+    | .zero => 0
+    | .succ n => (n+1) + vsota_prvih n
 
-theorem gauss : (n : Nat) → 2 * vsota_prvih n = n * (n + 1) := by
-  sorry
+#eval vsota_prvih 7
 
-theorem cisto_pravi_gauss : (n : Nat) → vsota_prvih n = (n * (n + 1)) / 2 := by
-  sorry
+theorem gauss : (n : Nat) → 2 * vsota_prvih n = n * (n + 1) :=
+  by
+    intro n
+    induction n with
+    | zero =>
+      simp [vsota_prvih]
+    | succ n ih =>
+      simp [vsota_prvih, Nat.mul_add]
+      rw [ih]
+      simp [Nat.two_mul, Nat.add_mul, Nat.mul_add]
+      simp [<- Nat.add_add_add_comm, Nat.add_comm]
+      simp [<- Nat.add_assoc]
+      simp [Nat.add_comm]
+
+
+
+
+theorem cisto_pravi_gauss : (n : Nat) → vsota_prvih n = (n * (n + 1)) / 2 :=
+  by
+    intro n
+    induction n with
+    | zero =>
+      simp [vsota_prvih]
+    | succ n ih =>
+      simp [vsota_prvih]
+      simp [Nat.mul_add]
+      simp [Nat.mul_comm]
+      sorry
+
+
+
 
 /------------------------------------------------------------------------------
  ## Vektorji
@@ -40,10 +71,19 @@ def stakni : {A : Type} → {m n : Nat} → Vektor A m → Vektor A n → Vektor
   | .sestavljen x xs' => by rw [Nat.add_right_comm]; exact Vektor.sestavljen x (stakni xs' ys)
 
 def obrni : {A : Type} → {n : Nat} → Vektor A n → Vektor A n :=
-  sorry
+  fun xs => match xs with
+  | Vektor.prazen => Vektor.prazen
+  | Vektor.sestavljen x xs' => stakni (obrni xs') (Vektor.sestavljen x (Vektor.prazen))
 
-def glava : sorry :=
-  sorry
+#eval obrni (Vektor.sestavljen 3 (Vektor.sestavljen 5 (Vektor.sestavljen 99 Vektor.prazen)))
+
+
+
+def glava : {A : Type} → {n : Nat} → Vektor A n → A :=
+  fun xs => match xs with
+  | Vektor.prazen => sorry
+  | Vektor.sestavljen x xs' => x
+
 
 def rep : sorry :=
   sorry

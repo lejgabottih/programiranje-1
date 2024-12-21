@@ -18,13 +18,26 @@ Natančno definirajte pogoje, da funkcija `f` uredi seznam.
  - : int list = [7]
 [*----------------------------------------------------------------------------*)
 
+let insert n sez =
+  let rec pomozna n sez acc =
+    match sez with
+    | [] -> List.rev (n :: acc)
+    | x :: xs -> if n < x then (List.rev (n :: acc)) @ (x :: xs) else pomozna n xs (x :: acc)
+  in
+  pomozna n sez []
 
 (*----------------------------------------------------------------------------*]
  Prazen seznam je že urejen. Funkcija [insert_sort] uredi seznam tako da
  zaporedoma vstavlja vse elemente seznama v prazen seznam.
 [*----------------------------------------------------------------------------*)
 
-
+let insert_sort list =
+  let rec pomozna list acc =
+    match list with
+    | [] -> acc
+    | x :: xs -> pomozna xs (insert x acc)
+  in
+  pomozna list []
 
 (*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*]
  Urejanje z Izbiranjem
@@ -71,6 +84,7 @@ Natančno definirajte pogoje, da funkcija `f` uredi seznam.
  # test;;
  - : int array = [|0; 4; 2; 3; 1|]
 [*----------------------------------------------------------------------------*)
+
 
 
 (*----------------------------------------------------------------------------*]
