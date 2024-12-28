@@ -13,7 +13,7 @@ def vsota_prvih : Nat → Nat :=
   fun n =>
     match n with
     | .zero => 0
-    | .succ n => (n+1) + vsota_prvih n
+    | .succ n => vsota_prvih n + (n+1)
 
 #eval vsota_prvih 7
 
@@ -33,7 +33,6 @@ theorem gauss : (n : Nat) → 2 * vsota_prvih n = n * (n + 1) :=
 
 
 
-
 theorem cisto_pravi_gauss : (n : Nat) → vsota_prvih n = (n * (n + 1)) / 2 :=
   by
     intro n
@@ -41,12 +40,8 @@ theorem cisto_pravi_gauss : (n : Nat) → vsota_prvih n = (n * (n + 1)) / 2 :=
     | zero =>
       simp [vsota_prvih]
     | succ n ih =>
-      simp [vsota_prvih]
-      simp [Nat.mul_add]
-      simp [Nat.mul_comm]
-      sorry
-
-
+      rw [<- gauss]
+      simp
 
 
 /------------------------------------------------------------------------------
@@ -79,14 +74,18 @@ def obrni : {A : Type} → {n : Nat} → Vektor A n → Vektor A n :=
 
 
 
-def glava : {A : Type} → {n : Nat} → Vektor A n → A :=
-  fun xs => match xs with
-  | Vektor.prazen => sorry
-  | Vektor.sestavljen x xs' => x
+def glava {A : Type} {n : Nat} : Vektor A n → Option A :=
+  fun vekt => match vekt with
+  | Vektor.prazen => Option.none
+  | Vektor.sestavljen x xs => Option.some x
+
+def rep {A : Type} {n : Nat} : Vektor A n → Option (Vektor A (n - 1)) :=
+  fun vekt => match vekt with
+  | Vektor.prazen => Option.none
+  | Vektor.sestavljen x xs => Option.some xs
 
 
-def rep : sorry :=
-  sorry
+#eval glava (Vektor.sestavljen 3 (Vektor.prazen))
 
 /------------------------------------------------------------------------------
  ## Predikatni račun
@@ -98,18 +97,31 @@ def rep : sorry :=
 ------------------------------------------------------------------------------/
 
 theorem forall_implies : {A : Type} → {P Q : A → Prop} →
-  (∀ x, (P x → Q x)) → (∀ x, P x) → (∀ x, Q x) := by
-  sorry
+  (∀ x, (P x → Q x)) → (∀ x, P x) → (∀ x, Q x) :=
+    by
+    intros A P Q
+    intros h k x
+    exact h x (k x)
+
 
 theorem forall_implies' : {A : Type} → {P : Prop} → {Q : A → Prop} →
-  (∀ x, (P → Q x)) ↔ (P → ∀ x, Q x) := by
-  sorry
+  (∀ x, (P → Q x)) ↔ (P → ∀ x, Q x) :=
+  by
+  intros A P Q
+  apply Iff.intro
+  . intros h p x
+    exact  h x p
+  . intros h x p
+    exact h p x
+
+
 
 theorem paradoks_pivca :
   {G : Type} → {P : G → Prop} →
   (g : G) →  -- (g : G) pove, da je v gostilni vsaj en gost
-  ∃ (p : G), (P p → ∀ (x : G), P x) := by
-  sorry
+  ∃ (p : G), (P p → ∀ (x : G), P x) :=
+  by
+    sorry
 
 /------------------------------------------------------------------------------
  ## Dvojiška drevesa
@@ -150,14 +162,41 @@ def elementi' : {A : Type} → Drevo A → List A :=
 theorem zrcali_zrcali :
   {A : Type} → (t : Drevo A) →
   zrcali (zrcali t) = t := by
-  sorry
+  intro A t
+  induction t with
+    | prazno =>
+      simp [zrcali]
+    | sestavljeno l v r ihl ihr =>
+      simp [zrcali]
+      rw [ihl, ihr]
+      apply And.intro
+      rfl
+      rfl
+
+
 
 theorem visina_zrcali :
   {A : Type} → (t : Drevo A) →
   visina (zrcali t) = visina t := by
-  sorry
+  intro A t
+  induction t with
+    | prazno =>
+      simp [zrcali]
+    | sestavljeno l v r ihl ihr =>
+      simp [visina]
+      rw [ihl, ihr]
+      rw [Nat.max_comm]
+
+
 
 theorem elementi_elementi' :
   {A : Type} → (t : Drevo A) →
   elementi t = elementi' t := by
-  sorry
+  intro A t
+  induction t with
+    | prazno  =>
+      simp [elementi, elementi', elementi'.aux]
+    | sestavljeno l x r ihl ihr =>
+      simp [elementi]
+      rw [ihl, ihr]
+      simp [elementi']
