@@ -121,7 +121,37 @@ theorem paradoks_pivca :
   (g : G) →  -- (g : G) pove, da je v gostilni vsaj en gost
   ∃ (p : G), (P p → ∀ (x : G), P x) :=
   by
-    sorry
+    intros G P g
+    apply Classical.byCases
+    . intro p?
+      exists g
+    . intro samo_pivec
+
+      have ne_pijejo_vsi : ¬ ∀ (a : G), P a :=
+      by
+        intro vsi
+        apply samo_pivec
+        intro pivec
+        exact vsi
+
+      have en_ne_pije : ∃ (b : G), ¬ P b :=
+      by
+        apply Classical.not_forall.mp
+        exact ne_pijejo_vsi
+
+      have ⟨ p, ne_Pp ⟩ := en_ne_pije
+
+      exists p
+      intro Pp
+      apply Classical.byContradiction
+      -- apply ne_pijejo_vsi ???
+      intro isto_kot_npv
+      exact ne_Pp Pp
+
+
+
+
+
 
 /------------------------------------------------------------------------------
  ## Dvojiška drevesa
@@ -189,6 +219,20 @@ theorem visina_zrcali :
 
 
 
+theorem pomozna_trd : ∀ {A : Type}, ∀ {t : Drevo A}, ∀ {list : List A},
+  elementi'.aux t list = elementi t ++ list :=
+by
+  intro A t
+  induction t with
+  | prazno =>
+    simp [elementi, elementi'.aux]
+  | sestavljeno l x r ihl ihr =>
+    simp [elementi, elementi'.aux]
+    intro list
+    rw [ihr, ihl]
+
+
+
 theorem elementi_elementi' :
   {A : Type} → (t : Drevo A) →
   elementi t = elementi' t := by
@@ -196,7 +240,7 @@ theorem elementi_elementi' :
   induction t with
     | prazno  =>
       simp [elementi, elementi', elementi'.aux]
-    | sestavljeno l x r ihl ihr =>
-      simp [elementi]
-      rw [ihl, ihr]
+    | sestavljeno l x r _ _ =>
       simp [elementi']
+      rw [pomozna_trd]
+      simp
