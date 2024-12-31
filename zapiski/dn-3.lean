@@ -125,16 +125,17 @@ theorem paradoks_pivca :
     apply Classical.byCases
     . intro p?
       exists g
+
     . intro samo_pivec
 
-      have ne_pijejo_vsi : ¬ ∀ (a : G), P a :=
+      have ne_pijejo_vsi : ¬∀(a : G), P a :=
       by
         intro vsi
         apply samo_pivec
         intro pivec
         exact vsi
 
-      have en_ne_pije : ∃ (b : G), ¬ P b :=
+      have en_ne_pije : ∃(b : G), ¬P b :=
       by
         apply Classical.not_forall.mp
         exact ne_pijejo_vsi
@@ -148,6 +149,19 @@ theorem paradoks_pivca :
       intro isto_kot_npv
       exact ne_Pp Pp
 
+
+    -- cases Classical.em (∃ x : G, ¬P x) with
+    --   | inl en_ne_pije =>
+
+    --     -- have h := en_ne_pije
+    --     -- cases h with
+    --     -- | intro p ne_Pp =>
+    --     --   exact ⟨p, fun Pp => absurd Pp ne_Pp⟩
+
+    --     obtain ⟨p, ne_Pp⟩ := en_ne_pije
+    --     exact ⟨p, fun Pp => absurd Pp ne_Pp⟩
+    --   | inr vsi_pijejo =>
+    --     exact ⟨g, fun _ x => Classical.byContradiction (fun ne_Px => vsi_pijejo ⟨x, ne_Px⟩)⟩
 
 
 
@@ -219,8 +233,8 @@ theorem visina_zrcali :
 
 
 
-theorem pomozna_trd : ∀ {A : Type}, ∀ {t : Drevo A}, ∀ {list : List A},
-  elementi'.aux t list = elementi t ++ list :=
+theorem pomozna_trd : ∀ {A : Type}, ∀ {t : Drevo A}, ∀ {sez : List A},
+  elementi'.aux t sez = elementi t ++ sez :=
 by
   intro A t
   induction t with
@@ -228,7 +242,7 @@ by
     simp [elementi, elementi'.aux]
   | sestavljeno l x r ihl ihr =>
     simp [elementi, elementi'.aux]
-    intro list
+    intro sez
     rw [ihr, ihl]
 
 
